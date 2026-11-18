@@ -1,6 +1,10 @@
-
+# Imports for ListingForm
 from django import forms
 from .models import Listing
+
+# Imports for RegisterForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 
 
 class ListingForm(forms.ModelForm):
@@ -35,3 +39,30 @@ class ListingForm(forms.ModelForm):
                 'placeholder': 'Provide additional information about your containers'
             }),
         }
+
+
+class RegisterForm(UserCreationForm):
+    # Require an email address during registration
+    email = forms.EmailField(required=True)
+
+    class Meta(UserCreationForm.Meta):
+        model = get_user_model()
+        fields = ('username', 'email')
+
+    # Apply Bootstrap styling to the registration fields
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+    
+    # Prevent users from registering with an existing email
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        if get_user_model().objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError(
+                'An account with this email already exists.'
+            )
+
+        return email

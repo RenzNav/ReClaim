@@ -11,21 +11,70 @@
 </head>
 <body>
 
+    <!-- Navigation bar -->
     <nav class="navbar navbar-expand bg-light border-bottom">
         <div class="container">
+
+            <!-- ReClaim logo -->
             <a class="navbar-brand fw-bold" href="{% url 'home' %}">
                 ReClaim
             </a>
 
-            <div class="navbar-nav">
+            <!-- Main navigation -->
+            <div class="navbar-nav me-auto">
                 <a class="nav-link" href="{% url 'home' %}">Home</a>
                 <a class="nav-link" href="{% url 'browse' %}">Browse</a>
-                <a class="nav-link" href="{% url 'create_listing' %}">Add Listing</a>
-                <a class="nav-link" href="{% url 'requests' %}">Requests</a>
+
+                {% if user.is_authenticated %}
+                    <!-- Listing management for logged-in users -->
+                    <a class="nav-link" href="{% url 'create_listing' %}">
+                        Add Listing
+                    </a>
+
+                    <a class="nav-link" href="{% url 'my_listings' %}">
+                        My Listings
+                    </a>
+
+                    <a class="nav-link" href="{% url 'requests' %}">
+                        Requests
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Show different options depending on login status -->
+            <div class="d-flex align-items-center gap-2">
+
+                {% if user.is_authenticated %}
+
+                    <span class="small">
+                        Hello, {{ user.username }}
+                    </span>
+
+                    <!-- Logout requires a POST request -->
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            Logout
+                        </button>
+                    </form>
+
+                {% else %}
+
+                    <a href="{% url 'login' %}" class="btn btn-outline-success btn-sm">
+                        Login
+                    </a>
+
+                    <a href="{% url 'register' %}" class="btn btn-success btn-sm">
+                        Register
+                    </a>
+
+                {% endif %}
+
             </div>
         </div>
     </nav>
 
+    <!-- Main content area -->
     <main class="container mt-4">
         {% block content %}
         {% endblock %}

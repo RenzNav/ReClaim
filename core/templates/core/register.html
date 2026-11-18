@@ -1,0 +1,64 @@
+
+{% extends 'core/base.html' %}
+
+{% block title %}Register - ReClaim{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+
+        <h2 class="fw-bold mb-2">Create your ReClaim account</h2>
+        <p class="text-muted mb-4">
+            Join ReClaim to share or collect deposit-return containers.
+        </p>
+
+        <!-- Registration form -->
+        <form method="POST" class="card p-4 shadow-sm">
+
+            {% csrf_token %}
+
+            <!-- Display any general form errors -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- Display each registration field -->
+            {% for field in form %}
+                <div class="mb-3">
+
+                    <label for="{{ field.id_for_label }}"
+                           class="form-label fw-semibold">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    <!-- Display field-specific validation errors -->
+                    {% for error in field.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-success w-100">
+                Create Account
+            </button>
+
+        </form>
+
+        <!-- Link to the ReClaim login page -->
+        <p class="text-center mt-3">
+            Already have an account?
+            <a href="{% url 'login' %}">Log in</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}
