@@ -1,15 +1,17 @@
-
 from django.conf import settings
 from django.db import models
 
 
 class Listing(models.Model):
+
+    # Link each listing to the user who created it
     donor = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='listings'
     )
 
+    # Store the main listing information
     title = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField()
     estimated_value = models.DecimalField(
@@ -20,5 +22,6 @@ class Listing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_available = models.BooleanField(default=True)
 
+    # Display the listing title when represented as text
     def __str__(self):
         return self.title

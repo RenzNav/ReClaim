@@ -1,5 +1,7 @@
 
 services:
+
+  # PostgreSQL database with PostGIS support
   db:
     image: postgis/postgis:17-3.5
     container_name: reclaim_db
@@ -9,31 +11,43 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
+
+    # Persist database records between container restarts
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    # Check that PostgreSQL is ready before starting Django
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  # Django web application
   web:
     build: .
     container_name: reclaim_web
     command: python manage.py runserver 0.0.0.0:8000
+
+    # Mount project files into the container
     volumes:
       - .:/app
     ports:
       - "8000:8000"
+
+    # Database connection settings
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
+
+    # Wait until the database health check succeeds
     depends_on:
       db:
         condition: service_healthy
 
+# Named volume for persistent database storage
 volumes:
   postgres_data:
