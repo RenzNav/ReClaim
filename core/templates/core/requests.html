@@ -3,6 +3,174 @@
 {% block title %}Collection Requests - ReClaim{% endblock %}
 
 {% block content %}
-    <h1>Collection Requests</h1>
-    <p>Your sent and received collection requests will appear here.</p>
+
+<h1 class="h3 fw-bold">Collection Requests</h1>
+<p class="text-muted">Manage collection requests for your listings.</p>
+
+<!-- Request status summary -->
+<div class="row g-2 mb-4">
+
+    <div class="col-4">
+        <div class="card text-center p-3 h-100">
+            <h2 class="h4 text-warning mb-1">3</h2>
+            <span class="small text-muted">Pending</span>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card text-center p-3 h-100">
+            <h2 class="h4 text-success mb-1">1</h2>
+            <span class="small text-muted">Accepted</span>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card text-center p-3 h-100">
+            <h2 class="h4 text-danger mb-1">1</h2>
+            <span class="small text-muted">Declined</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- Visual request navigation -->
+<div class="nav nav-tabs mb-3">
+    <button class="nav-link active text-success">
+        Incoming Requests
+    </button>
+    <button class="nav-link text-muted">
+        Outgoing Requests
+    </button>
+</div>
+
+<!-- Container for sample request cards -->
+<div id="request-list"></div>
+
+<!-- Identify this page as a visual prototype -->
+<p class="small text-muted mt-3">
+    <i class="bi bi-info-circle"></i>
+    Prototype preview — illustrative collection requests.
+</p>
+
+<script>
+
+    // Fictional requests from existing demo accounts
+    const requests = [
+        {
+            collector: "demo_james_kelly",
+            listing: "Plastic Water Bottles",
+            message: "Hi, I can collect these tomorrow afternoon.",
+            time: "10 minutes ago",
+            status: "Pending"
+        },
+        {
+            collector: "demo_emma_byrne",
+            listing: "Party Leftovers",
+            message: "Hi! Are these still available for collection?",
+            time: "35 minutes ago",
+            status: "Pending"
+        },
+        {
+            collector: "demo_conor_smith",
+            listing: "Plastic Water Bottles",
+            message: "I would be interested in collecting these.",
+            time: "1 hour ago",
+            status: "Pending"
+        },
+        {
+            collector: "demo_aoife_brennan",
+            listing: "Party Leftovers",
+            message: "I am available to collect these this evening.",
+            time: "Yesterday",
+            status: "Accepted"
+        },
+        {
+            collector: "demo_daniel_ryan",
+            listing: "Plastic Water Bottles",
+            message: "Would collection be possible this weekend?",
+            time: "Yesterday",
+            status: "Declined"
+        }
+    ];
+
+    // Colours for each request status
+    const statusColours = {
+        Pending: "bg-warning-subtle text-warning-emphasis",
+        Accepted: "bg-success-subtle text-success",
+        Declined: "bg-danger-subtle text-danger"
+    };
+
+    const requestList = document.getElementById("request-list");
+
+    // Generate a card for each sample request
+    requests.forEach(request => {
+
+        requestList.innerHTML += `
+            <div class="card shadow-sm rounded-3 mb-3">
+                <div class="card-body">
+
+                    <!-- Collector information -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+
+                        <div class="bg-light rounded-circle p-2">
+                            <i class="bi bi-person-circle fs-4"></i>
+                        </div>
+
+                        <div class="flex-grow-1 text-break">
+                            <div class="fw-semibold small">
+                                ${request.collector}
+                            </div>
+                            <div class="text-muted small">
+                                ${request.time}
+                            </div>
+                        </div>
+
+                        <span class="badge ${statusColours[request.status]}">
+                            ${request.status}
+                        </span>
+
+                    </div>
+
+                    <hr>
+
+                    <!-- Requested listing information -->
+                    <div class="small text-muted">
+                        Requested listing
+                    </div>
+
+                    <h3 class="h6 fw-bold mt-1">
+                        <i class="bi bi-recycle text-success"></i>
+                        ${request.listing}
+                    </h3>
+
+                    <p class="small mb-3">
+                        ${request.message}
+                    </p>
+
+                    <!-- Visual action buttons for pending requests -->
+                    ${request.status === "Pending" ? `
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <button type="button"
+                                        class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-x-lg"></i> Decline
+                                </button>
+                            </div>
+
+                            <div class="col-6">
+                                <button type="button"
+                                        class="btn btn-success w-100">
+                                    <i class="bi bi-check-lg"></i> Accept
+                                </button>
+                            </div>
+                        </div>
+                    ` : ""}
+
+                </div>
+            </div>
+        `;
+    });
+
+</script>
+
 {% endblock %}

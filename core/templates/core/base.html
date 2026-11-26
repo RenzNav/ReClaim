@@ -13,15 +13,127 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Custom CSS for ReClaim -->
-     <style>
+    <style>
+        /* ReClaim colour palette */
+        :root {
+            --reclaim-primary: #245C4B;
+            --reclaim-secondary: #84A98C;
+            --reclaim-background: #F6F5EF;
+            --reclaim-accent: #D4AA70;
+            --reclaim-text: #263832;
+            --reclaim-white: #FFFFFF;
+            --reclaim-border: #DEE5DC;
+        }
+
+        /* Global appearance and space for bottom navigation */
+        body {
+            background-color: var(--reclaim-background);
+            color: var(--reclaim-text);
+            padding-bottom: 85px;
+        }
+
+        /* Top navigation bar */
+        .top-navbar {
+            background-color: var(--reclaim-primary);
+        }
+
+        .top-navbar .navbar-brand,
+        .top-navbar span {
+            color: var(--reclaim-white);
+        }
+
+        /* Account buttons in the top navigation */
+        .top-navbar .btn-outline-danger,
+        .top-navbar .btn-outline-success,
+        .top-navbar .btn-success {
+            color: var(--reclaim-white);
+            border-color: var(--reclaim-white);
+        }
+
+        .top-navbar .btn-outline-danger:hover,
+        .top-navbar .btn-outline-success:hover,
+        .top-navbar .btn-success:hover {
+            background-color: var(--reclaim-white);
+            color: var(--reclaim-primary);
+            border-color: var(--reclaim-white);
+        }
+
+        /* Primary action buttons */
+        .btn-success {
+            --bs-btn-color: #ffffff;
+            --bs-btn-bg: var(--reclaim-primary);
+            --bs-btn-border-color: var(--reclaim-primary);
+            --bs-btn-hover-bg: #1B473A;
+            --bs-btn-hover-border-color: #1B473A;
+            --bs-btn-active-bg: #163B30;
+            --bs-btn-active-border-color: #163B30;
+        }
+
+        /* Secondary action buttons */
+        .btn-outline-success {
+            --bs-btn-color: var(--reclaim-primary);
+            --bs-btn-border-color: var(--reclaim-primary);
+            --bs-btn-hover-color: #ffffff;
+            --bs-btn-hover-bg: var(--reclaim-primary);
+            --bs-btn-hover-border-color: var(--reclaim-primary);
+            --bs-btn-active-color: #ffffff;
+            --bs-btn-active-bg: var(--reclaim-primary);
+            --bs-btn-active-border-color: var(--reclaim-primary);
+        }
+
+        /* Override Bootstrap's default green */
+        .text-success {
+            color: var(--reclaim-primary) !important;
+        }
+
+        .bg-success {
+            background-color: var(--reclaim-primary) !important;
+        }
+
+        .bg-success-subtle {
+            background-color: #E1EBE3 !important;
+        }
+
+        /* Consistent appearance for cards */
+        .card {
+            background-color: var(--reclaim-white);
+            color: var(--reclaim-text);
+            border-color: var(--reclaim-border);
+            border-radius: 12px;
+        }
+
+        /* Soft gold highlight for deposit values */
+        .deposit-value {
+            background-color: #F3E5CF;
+            color: var(--reclaim-text);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Form input appearance */
+        .form-control,
+        .form-select {
+            color: var(--reclaim-text);
+            border-color: var(--reclaim-border);
+        }
+
+        /* Highlight selected form inputs */
+        .form-control:focus,
+        .form-select:focus {
+            color: var(--reclaim-text);
+            border-color: var(--reclaim-secondary);
+            box-shadow: 0 0 0 0.2rem rgba(36, 92, 75, 0.15);
+        }
+
         /* Fixed bottom navigation bar */
         .bottom-navbar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #ffffff;
-            border-top: 1px solid #dee2e6;
+            background: var(--reclaim-white);
+            border-top: 1px solid var(--reclaim-border);
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -50,41 +162,46 @@
 
         /* Highlight the currently selected page */
         .bottom-nav-item.active {
-            color: #198754;
+            color: var(--reclaim-primary);
             font-weight: 600;
+        }
+
+        /* Navigation item hover state */
+        .bottom-nav-item:hover {
+            color: var(--reclaim-primary);
         }
 
         /* Central Add Listing button */
         .add-nav-item {
-            color: #198754;
+            color: var(--reclaim-primary);
             font-weight: 600;
         }
 
         .add-nav-icon {
             width: 44px;
             height: 44px;
-            border-radius: 14px;
-            background: #198754;
-            color: white;
+            border-radius: 50%;
+            background: var(--reclaim-primary);
+            color: var(--reclaim-white);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* Add Listing button icon */
         .add-nav-icon i {
             font-size: 25px;
         }
-
-        /* Leave room for the fixed navigation */
-        body {
-            padding-bottom: 85px;
-        }
     </style>
+
+    <!-- Additional resources for individual pages -->
+    {% block extra_head %}
+    {% endblock %}
 </head>
 <body>
 
     <!-- Top navigation containing branding and account controls -->
-    <nav class="navbar bg-light border-bottom">
+    <nav class="navbar top-navbar border-bottom">
         <div class="container">
 
             <a class="navbar-brand fw-bold" href="{% url 'home' %}">

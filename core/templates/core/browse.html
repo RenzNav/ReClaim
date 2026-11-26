@@ -2,7 +2,224 @@
 
 {% block title %}Browse Listings - ReClaim{% endblock %}
 
+{% block extra_head %}
+
+<!-- Leaflet CSS and JavaScript -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+    /* Map container */
+    #map {
+        height: 400px;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+        z-index: 1;
+    }
+
+    /* Reduce map height on mobile devices */
+    @media (max-width: 576px) {
+        #map {
+            height: 350px;
+        }
+    }
+
+    /* Preview listing cards */
+    .browse-card {
+        border-radius: 12px;
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
-    <h1>Browse Listings</h1>
-    <p>Nearby listings and the map will appear here.</p>
+
+<h1 class="h3 fw-bold">Browse Listings</h1>
+<p class="text-muted">
+    Discover available containers in your area.
+</p>
+
+<!-- Visual search bar -->
+<div class="input-group mb-3">
+    <span class="input-group-text bg-white">
+        <i class="bi bi-search"></i>
+    </span>
+
+    <input type="text"
+           class="form-control"
+           placeholder="Search by area..."
+           aria-label="Search by area">
+</div>
+
+<!-- Visual filtering options -->
+<div class="row g-2 mb-3">
+    <div class="col-6">
+        <select class="form-select" aria-label="Distance">
+            <option>Within 5 km</option>
+            <option>Within 10 km</option>
+            <option>Within 20 km</option>
+        </select>
+    </div>
+
+    <div class="col-6">
+        <select class="form-select" aria-label="Container type">
+            <option>All containers</option>
+            <option>Plastic bottles</option>
+            <option>Aluminium cans</option>
+        </select>
+    </div>
+</div>
+
+<!-- Interactive map -->
+<div id="map"></div>
+
+<!-- Identify fictional demonstration locations -->
+<div class="small text-muted mt-2">
+    <i class="bi bi-info-circle"></i>
+    Prototype preview — illustrative locations and filters.
+</div>
+
+<!-- Sample nearby listings -->
+<div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+    <h2 class="h5 fw-bold mb-0">Nearby Listings</h2>
+    <span class="text-muted small">8 demo listings</span>
+</div>
+
+<div id="nearby-listings" class="row g-3 mb-4"></div>
+
+<script>
+    // Initialise the map centred on Dublin
+    const map = L.map('map').setView([53.3498, -6.2603], 12);
+
+    // Load OpenStreetMap tiles with referrer information
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        referrerPolicy: 'strict-origin-when-cross-origin',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Fictional listing locations for the prototype
+    const demoListings = [
+        {
+            title: "Mixed Cans and Bottles",
+            quantity: 30,
+            value: "4.50",
+            area: "Phibsborough",
+            lat: 53.3618,
+            lng: -6.2735
+        },
+        {
+            title: "Plastic Water Bottles",
+            quantity: 15,
+            value: "2.25",
+            area: "Drumcondra",
+            lat: 53.3702,
+            lng: -6.2538
+        },
+        {
+            title: "Large Plastic Bottles",
+            quantity: 20,
+            value: "5.00",
+            area: "Rathmines",
+            lat: 53.3225,
+            lng: -6.2650
+        },
+        {
+            title: "Soft Drink Cans",
+            quantity: 12,
+            value: "1.80",
+            area: "Smithfield",
+            lat: 53.3480,
+            lng: -6.2780
+        },
+        {
+            title: "Household Recycling",
+            quantity: 60,
+            value: "9.00",
+            area: "Clontarf",
+            lat: 53.3610,
+            lng: -6.2070
+        },
+        {
+            title: "Energy Drink Cans",
+            quantity: 18,
+            value: "2.70",
+            area: "Inchicore",
+            lat: 53.3405,
+            lng: -6.3240
+        },
+        {
+            title: "Office Recycling",
+            quantity: 80,
+            value: "12.00",
+            area: "Docklands",
+            lat: 53.3470,
+            lng: -6.2330
+        },
+        {
+            title: "Student House Recycling",
+            quantity: 50,
+            value: "7.50",
+            area: "Cabra",
+            lat: 53.3660,
+            lng: -6.2980
+        }
+    ];
+
+    const listingsContainer = document.getElementById('nearby-listings');
+
+    demoListings.forEach(listing => {
+
+        // Display an illustrative collection area
+        L.circle([listing.lat, listing.lng], {
+            color: '#198754',
+            fillColor: '#198754',
+            fillOpacity: 0.15,
+            weight: 1,
+            radius: 400
+        }).addTo(map);
+
+        // Add a marker with listing information
+        L.marker([listing.lat, listing.lng])
+            .addTo(map)
+            .bindPopup(`
+                <strong>${listing.title}</strong><br>
+                ${listing.area}<br>
+                ${listing.quantity} containers<br>
+                Estimated value: €${listing.value}
+            `);
+
+        // Display a corresponding listing card
+        listingsContainer.innerHTML += `
+            <div class="col-12 col-md-6">
+                <div class="card browse-card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="h6 fw-bold">
+                                ${listing.title}
+                            </h3>
+                            <span class="text-success fw-bold">
+                                €${listing.value}
+                            </span>
+                        </div>
+
+                        <p class="small text-muted mb-2">
+                            <i class="bi bi-geo-alt"></i>
+                            ${listing.area}
+                        </p>
+
+                        <p class="small mb-0">
+                            <i class="bi bi-recycle"></i>
+                            ${listing.quantity} containers
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+</script>
+
 {% endblock %}
